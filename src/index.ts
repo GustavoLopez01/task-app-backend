@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import taskRouter from './router/taskRouter'
+import authRouter from './router/authRouter'
 import connection from './db/connection'
 
 async function getConnection() {
@@ -23,7 +24,8 @@ server.use(express.json())
 server.use(cors())
 
 server.use('/api/task', taskRouter)
+server.use('/api/auth', authRouter)
 
-server.listen(process.env.PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running in port ${PORT}`);
 })

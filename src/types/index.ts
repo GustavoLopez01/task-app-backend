@@ -17,3 +17,12 @@ export type UserBody = {
 }
 
 export type NewUser = Omit<UserBody, 'id'>
+
+
+export type Categorybody = {
+  id: number
+  name: string
+  description: string
+}
+
+export type NewCategory = Omit<Categorybody, 'id'>

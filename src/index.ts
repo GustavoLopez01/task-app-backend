@@ -4,6 +4,7 @@ import cors from 'cors'
 import taskRouter from './router/taskRouter'
 import authRouter from './router/authRouter'
 import userRouter from './router/userRouter'
+import categoryRouter from './router/categoryRouter'
 import connection from './db/connection'
 
 async function getConnection() {
@@ -27,6 +28,7 @@ server.use(cors())
 server.use('/api/task', taskRouter)
 server.use('/api/auth', authRouter)
 server.use('/api/user', userRouter)
+server.use('/api/category', categoryRouter)
 
 server.listen(PORT, () => {
   console.log(`Server is running in port ${PORT}`);

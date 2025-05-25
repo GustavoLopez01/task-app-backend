@@ -28,12 +28,12 @@ class Task extends Model {
   @Column({
     type: DataType.INTEGER
   })
-  declare categoryId: number
+  declare number: number
 
   @Column({
     type: DataType.INTEGER
   })
-  declare number: number
+  declare categoryId: number
 
   @Column({
     type: DataType.INTEGER

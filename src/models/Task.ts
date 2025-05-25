@@ -3,17 +3,15 @@ import {
   Model,
   Column,
   DataType,
-  AutoIncrement,
-  PrimaryKey,
 } from 'sequelize-typescript'
 
-@Table({ tableName: 'Task' })
-export class Task extends Model {
+@Table({ tableName: 'task' })
+class Task extends Model {
 
-  @PrimaryKey
-  @AutoIncrement
   @Column({
     type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
   })
   declare id: number
 
@@ -36,4 +34,11 @@ export class Task extends Model {
     type: DataType.INTEGER
   })
   declare number: number
+
+  @Column({
+    type: DataType.INTEGER
+  })
+  declare userId: number
 }
+
+export default Task

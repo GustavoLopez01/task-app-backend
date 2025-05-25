@@ -18,7 +18,7 @@ router.get('/',
 )
 
 router.get('/:id',
-  param('id').notEmpty().isNumeric().withMessage('El parámetro id es requerido'),
+  param('id').notEmpty().isNumeric().withMessage('Parámetro id es requerido'),
   verifyToken,
   validateFields,
   getById
@@ -32,7 +32,7 @@ router.post('/',
 )
 
 router.put('/:id',
-  param('id').notEmpty().isNumeric().withMessage('El campo id es requerido.'),
+  param('id').notEmpty().isNumeric().withMessage('Parámetro id es requerido.'),
   checkSchema(taskSchema),
   verifyToken,
   validateFields,

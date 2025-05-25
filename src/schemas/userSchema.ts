@@ -1,16 +1,21 @@
-
-
 export const userSchema = {
   name: {
-    notEmpty: { errorMessage: 'Campo name es requerido' },
-    isString: { errorMessage: 'Campo name es debe ser una cadena de caracteres' },
+    custom: {
+      options: (value: any) => {
+        return typeof value === 'string' && value.trim().length > 0
+      },
+      errorMessage: 'Campo name es requerido'
+    }
   },
   age: {
-    notEmpty: { errorMessage: 'Campo age es requerido' },
-    isNumeric: { errorMessage: 'Campo age debe ser un número' }
+    custom: {
+      options: (value: any) => {
+        return typeof value === 'number' && value > 0
+      },
+      errorMessage: 'Campo age es requerido'
+    }
   },
   email: {
-    isEmail: { errorMessage: 'Campo email debe ser un correo electronico' },
-    notEmpty: { errorMessage: 'Campo email es requerido' },
+    isEmail: { errorMessage: 'Campo email debe ser un correo electrónico' },
   },
 }

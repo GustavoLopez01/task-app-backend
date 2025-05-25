@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Task } from '../models/Task'
+import Task from '../models/Task'
 import type { SaveTask, TaskBody } from '../types'
 
 export const getAll = async (req: Request, res: Response) => {

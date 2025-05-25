@@ -3,7 +3,9 @@ import {
   DataType,
   Table,
   Column,
+  HasMany,
 } from 'sequelize-typescript'
+import Task from './Task'
 
 @Table({ tableName: 'user' })
 class User extends Model {
@@ -32,6 +34,9 @@ class User extends Model {
     allowNull: false
   })
   declare email: string
+
+  @HasMany(() => Task, 'userId')
+  declare tasks: Task[]
 
 }
 

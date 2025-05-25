@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { body, param } from 'express-validator'
+import { param, checkSchema } from 'express-validator'
 import { validateFields } from '../middlewares/validateFields'
 import {
   getAll,
@@ -8,6 +8,7 @@ import {
   update
 } from '../controllers/TaskController'
 import { verifyToken } from '../middlewares/Jwt'
+import { taskSchema } from '../schemas/taskSchema'
 
 const router = Router()
 
@@ -24,10 +25,7 @@ router.get('/:id',
 )
 
 router.post('/',
-  body('title').notEmpty().trim().withMessage('El campo titulo es requerido.'),
-  body('description').notEmpty().trim().withMessage('El campo descripción es requerido.'),
-  body('categoryId').notEmpty().isNumeric().withMessage('El campo categoria es requerido.'),
-  body('number').notEmpty().isNumeric().withMessage('El campo número es requerido.'),
+  checkSchema(taskSchema),
   verifyToken,
   validateFields,
   save
@@ -35,10 +33,7 @@ router.post('/',
 
 router.put('/:id',
   param('id').notEmpty().isNumeric().withMessage('El campo id es requerido.'),
-  body('title').notEmpty().trim().withMessage('El campo titulo es requerido.'),
-  body('description').notEmpty().trim().withMessage('El campo descripción es requerido.'),
-  body('categoryId').notEmpty().isNumeric().withMessage('El campo categoria es requerido.'),
-  body('number').notEmpty().isNumeric().withMessage('El campo número es requerido.'),
+  checkSchema(taskSchema),
   verifyToken,
   validateFields,
   update

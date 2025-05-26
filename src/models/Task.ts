@@ -16,27 +16,32 @@ class Task extends Model {
   declare id: number
 
   @Column({
-    type: DataType.STRING
+    type: DataType.STRING,
+    allowNull: false
   })
   declare title: string
 
   @Column({
-    type: DataType.STRING
+    type: DataType.STRING,
+    allowNull: false
   })
   declare description: string
 
   @Column({
-    type: DataType.INTEGER
+    type: DataType.INTEGER,
+    allowNull: false
   })
   declare number: number
 
   @Column({
-    type: DataType.INTEGER
+    type: DataType.INTEGER,
+    allowNull: false
   })
   declare categoryId: number
 
   @Column({
-    type: DataType.INTEGER
+    type: DataType.INTEGER,
+    allowNull: false
   })
   declare userId: number
 }

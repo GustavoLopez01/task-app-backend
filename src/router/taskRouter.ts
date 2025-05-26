@@ -1,8 +1,10 @@
 import { Router } from 'express'
-import { param, checkSchema } from 'express-validator'
+import { param, checkSchema, body } from 'express-validator'
 import { validateFields } from '../middlewares/validateFields'
 import {
   getAll,
+  getAllByUserAndCategoryId,
+  getAllByUserId,
   getById,
   save,
   update
@@ -15,6 +17,21 @@ const router = Router()
 router.get('/',
   verifyToken,
   getAll
+)
+
+router.get('/:userId/user-tasks',
+  param('userId').isNumeric().withMessage('Parámetro userId es requerido'),
+  verifyToken,
+  validateFields,
+  getAllByUserId
+)
+
+router.get('/:userId/category-tasks',
+  param('userId').isNumeric().withMessage('Parámetro userId es requerido'),
+  body('categoryId').isNumeric().withMessage('Parámetro categoryId es requerido'),
+  verifyToken,
+  validateFields,
+  getAllByUserAndCategoryId
 )
 
 router.get('/:id',

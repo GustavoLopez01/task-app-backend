@@ -6,7 +6,7 @@ export const validateExistUser = async (email: string) => {
     const response: UserBody = await User.findOne({
       where: { email }
     })
-    return response?.id ? true : false
+    return response?.id ? response.id : null
   } catch (error) {
     console.error(`Ocurrió un error al obtener el usaurio ${error}`);
   }

@@ -1,9 +1,10 @@
-import { 
-  Request, 
-  Response, 
+import {
+  Request,
+  Response,
   NextFunction
 } from 'express'
 import jwt from 'jsonwebtoken'
+import { BAD_REQUEST_CODE, UNAUTHORIZED_CODE } from '../constants/codes'
 
 export const createToken = (email: string) => {
   try {
@@ -23,24 +24,28 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     const finalToken = typeof token === "string" ? token : ""
     const privateKey = process.env.PRIVATE_KEY
     let isValid = true
-    jwt.verify(finalToken, privateKey, function (err, decoded) {
+    jwt.verify(finalToken, privateKey, function (err, decoded: any) {
       if (err) {
         isValid = false
         return
       }
+      req.headers.userEmail = decoded?.email ?? null
       return
     })
 
     if (!isValid) {
-      res.status(201).json({
+      res.status(UNAUTHORIZED_CODE).json({
         success: false,
         message: 'El token no es valido'
       })
       return
     }
-
     next()
   } catch (error) {
     console.error(`Ocurrió un error al verficar el token del usuario ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al verficar el token del usuario'
+    })
   }
 }

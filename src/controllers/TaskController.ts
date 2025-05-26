@@ -1,44 +1,130 @@
 import { Request, Response } from 'express'
 import Task from '../models/Task'
-import type { SaveTask, TaskBody } from '../types'
+import Category from '../models/Category'
+import { validateExistUser } from '../helpers/validations'
+import type {
+  Categorybody,
+  SaveTask,
+  TaskBody
+} from '../types'
+import {
+  BAD_REQUEST_CODE,
+  NOT_FOUND_CODE,
+  SUCCESS_ACTION_CODE
+} from '../constants/codes'
 
 export const getAll = async (req: Request, res: Response) => {
   try {
     const response: TaskBody[] = await Task.findAll()
     if (Array.isArray(response)) {
-      res.status(200).json({
+      res.status(SUCCESS_ACTION_CODE).json({
         success: true,
         tasks: response
       })
       return
     }
-    res.status(200).json({
+    res.status(SUCCESS_ACTION_CODE).json({
       success: false,
       tasks: []
     })
   } catch (error) {
     console.log(`Ocurrió un error al obtener las tareas ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al obtener las tareas'
+    })
+  }
+}
+
+export const getAllByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params
+    const response: TaskBody[] = await Task.findAll({
+      where: { userId }
+    })
+
+    if (Array.isArray(response)) {
+      res.status(SUCCESS_ACTION_CODE).json({
+        success: true,
+        data: response
+      })
+      return
+    }
+
+    res.status(SUCCESS_ACTION_CODE).json({
+      success: false,
+      message: `No existe usuario con id ${userId}`
+    })
+  } catch (error) {
+    console.error(`Ocurrió un error al obtener las tareas del usuario ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al obtener las tareas del usuario'
+    })
+  }
+}
+
+export const getAllByUserAndCategoryId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params
+    const { categoryId } = req.body
+
+    const response: Categorybody = await Category.findOne({
+      include: [{
+        model: Task,
+        where: {
+          userId
+        }
+      }],
+      where: {
+        id: categoryId
+      }
+    })
+
+    if (response?.id) {
+      res.status(SUCCESS_ACTION_CODE).json({
+        success: true,
+        data: response
+      })
+      return
+    }
+
+    res.status(SUCCESS_ACTION_CODE).json({
+      success: false,
+      message: `No existe categoria con id ${categoryId}`
+    })
+  } catch (error) {
+    console.error(`Ocurrió un error al obtener las tareas del usaurio ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al obtener las tareas del usuario'
+    })
   }
 }
 
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const response = await Task.findByPk(id)
+    const response: TaskBody = await Task.findByPk(id)
 
     if (response?.id) {
-      res.status(200).json({
+      res.status(SUCCESS_ACTION_CODE).json({
         success: true,
         task: response
       })
       return
     }
-    res.status(200).json({
+
+    res.status(SUCCESS_ACTION_CODE).json({
       success: true,
-      Task: null
+      Task: `No existe tarea con id ${id}`
     })
   } catch (error) {
     console.error(`Ocurrió un error al obtener la tarea ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al obtener la tarea'
+    })
   }
 }
 
@@ -48,32 +134,45 @@ export const save = async (req: Request, res: Response) => {
       title,
       description,
       categoryId,
-      number
+      number,
     } = req.body
-
-    const task: SaveTask = {
-      title,
-      description,
-      categoryId,
-      number
-    }
-
-    const response: TaskBody = await Task.create(task)
-
-    if (response?.id) {
-      res.status(200).json({
-        success: true,
-        message: `Tarea ${title} registrada con exito!`
+    
+    const userEmail = String(req.headers['userEmail'])
+    const userId = await validateExistUser(userEmail)
+    if (!userId) {
+      res.status(NOT_FOUND_CODE).json({
+        success: false,
+        message: `No existe usuario con email ${userEmail}`
       })
       return
     }
 
-    res.status(200).json({
+    const response: TaskBody = await Task.create({
+      title,
+      description,
+      categoryId,
+      number,
+      userId
+    })
+
+    if (response?.id) {
+      res.status(SUCCESS_ACTION_CODE).json({
+        success: true,
+        task: response
+      })
+      return
+    }
+
+    res.status(BAD_REQUEST_CODE).json({
       success: false,
-      message: `Ocurrió un error al crear la tarea`
+      message: 'Ocurrió un error al crear la tarea'
     })
   } catch (error) {
     console.log(`Ocurrió un error al guardar la tarea ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al guardar la tarea'
+    })
   }
 }
 
@@ -81,13 +180,24 @@ export const update = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
     const response: TaskBody = await Task.findByPk(id)
+
     if (response?.id) {
       const {
         title,
         description,
         categoryId,
-        number
+        number,
       } = req.body
+
+      const userEmail = String(req.headers['userEmail'])
+      const userId = await validateExistUser(userEmail)
+      if (!userId) {
+        res.status(NOT_FOUND_CODE).json({
+          success: false,
+          message: `No existe usuario con email ${userEmail}`
+        })
+        return
+      }
 
       const updateTask: SaveTask = {
         title,
@@ -97,18 +207,22 @@ export const update = async (req: Request, res: Response) => {
       }
 
       await Task.update({ ...updateTask }, { where: { id } })
-      res.status(200).json({
+      res.status(SUCCESS_ACTION_CODE).json({
         success: true,
         task: { ...updateTask, id }
       })
       return
     }
 
-    res.status(200).json({
+    res.status(SUCCESS_ACTION_CODE).json({
       success: false,
       message: `No existe tarea con id ${id}`
     })
   } catch (error) {
     console.error(`Ocurrió un error al actualizar la tarea ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al actualizar la tarea'
+    })
   }
 }

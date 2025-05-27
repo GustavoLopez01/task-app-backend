@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { createToken } from '../middlewares/Jwt';
+import { BAD_REQUEST_CODE, SUCCESS_ACTION_CODE } from '../constants/codes'
 
 export const auth = (req: Request, res: Response) => {
   try {
@@ -7,14 +8,14 @@ export const auth = (req: Request, res: Response) => {
     const token = createToken(email)
 
     if (token) {
-      res.status(200).json({
+      res.status(SUCCESS_ACTION_CODE).json({
         success: true,
         token
       })
       return
     }
 
-    res.status(200).json({
+    res.status(BAD_REQUEST_CODE).json({
       success: false,
       message: "Ocurrió un error al generar el token"
     })

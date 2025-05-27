@@ -63,6 +63,7 @@ export const create = async (req: Request, res: Response) => {
       name,
       age,
       email,
+      password
     } = req.body
 
     const existUser = await validateExistUser(email)
@@ -74,7 +75,7 @@ export const create = async (req: Request, res: Response) => {
       return
     }
 
-    const newUser: NewUser = { name, age, email }
+    const newUser: NewUser = { name, age, email, password }
     const response: UserBody = await User.create({ ...newUser })
 
     if (response.id) {
@@ -104,6 +105,7 @@ export const update = async (req: Request, res: Response) => {
       name,
       age,
       email,
+      password
     } = req.body
 
     const existUser = await validateExistUser(email)
@@ -115,7 +117,7 @@ export const update = async (req: Request, res: Response) => {
     }
 
     const { id } = req.params
-    const updateUser: NewUser = { name, age, email, }
+    const updateUser: NewUser = { name, age, email, password }
     await User.update(
       { ...updateUser },
       { where: { id } }

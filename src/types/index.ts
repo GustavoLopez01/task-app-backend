@@ -14,6 +14,7 @@ export type UserBody = {
   name: string
   age: number
   email: string
+  password: string
 }
 
 export type NewUser = Omit<UserBody, 'id'>

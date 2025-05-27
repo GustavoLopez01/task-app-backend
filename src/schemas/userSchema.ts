@@ -18,4 +18,12 @@ export const userSchema = {
   email: {
     isEmail: { errorMessage: 'Campo email debe ser un correo electrónico' },
   },
+  password: {
+    custom: {
+      options: (value: any) => {
+        return typeof value === 'string' && value.trim().length > 0
+      },
+      errorMessage: 'Campo contraseña es requerido'
+    }
+  },
 }

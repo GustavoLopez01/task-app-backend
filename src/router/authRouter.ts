@@ -1,8 +1,9 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import { auth } from '../controllers/AuthController'
+import { authLogin, authLogout } from '../controllers/AuthController'
 import { validateFields } from '../middlewares/validateFields'
 import { validateUserByPassword } from '../middlewares/validateUserByPassword'
+import { verifyToken } from '../middlewares/Jwt'
 
 const router = Router()
 
@@ -11,7 +12,12 @@ router.post('/login',
   body('password').notEmpty().isString().withMessage('Campo password es requerido'),
   validateFields,
   validateUserByPassword,
-  auth
+  authLogin
+)
+
+router.post('/logout',
+  verifyToken,
+  authLogout
 )
 
 export default router

@@ -2,7 +2,7 @@ import {
   Column,
   Table,
   Model,
-  DataType
+  DataType,
 } from 'sequelize-typescript'
 
 @Table({ tableName: 'auth' })
@@ -17,11 +17,6 @@ class Auth extends Model {
     type: DataType.BOOLEAN
   })
   declare isActive: boolean
-
-  @Column({
-    type: DataType.INTEGER
-  })
-  declare userId: number
 
 }
 

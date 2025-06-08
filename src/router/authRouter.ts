@@ -8,8 +8,8 @@ import { verifyToken } from '../middlewares/Jwt'
 const router = Router()
 
 router.post('/login',
-  body('email').notEmpty().isString().withMessage('Campo email es requerido'),
-  body('password').notEmpty().isString().withMessage('Campo password es requerido'),
+  body('email').notEmpty().withMessage('Campo email es requerido'),
+  body('password').notEmpty().withMessage('Campo password es requerido'),
   validateFields,
   validateUserByPassword,
   authLogin

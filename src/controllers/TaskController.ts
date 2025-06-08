@@ -136,7 +136,7 @@ export const save = async (req: Request, res: Response) => {
       categoryId,
       number,
     } = req.body
-    
+
     const userEmail = String(req.headers['userEmail'])
     const userId = await validateExistUser(userEmail)
     if (!userId) {
@@ -209,7 +209,7 @@ export const update = async (req: Request, res: Response) => {
       await Task.update({ ...updateTask }, { where: { id } })
       res.status(SUCCESS_ACTION_CODE).json({
         success: true,
-        task: { ...updateTask, id }
+        task: { ...updateTask, id: response?.id }
       })
       return
     }
@@ -220,6 +220,32 @@ export const update = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error(`Ocurrió un error al actualizar la tarea ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al actualizar la tarea'
+    })
+  }
+}
+
+export const deleteById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const response = await Task.findByPk(id)
+    if (response) {
+      await response.destroy()
+      res.status(SUCCESS_ACTION_CODE).json({
+        success: true,
+        message: 'Se eliminó la tarea correctamente'
+      })
+      return
+    }
+    res.status(NOT_FOUND_CODE).json({
+      success: false,
+      message: `la tarea con id ${id} no existe`
+    })
+  } catch (error) {
+    console.error(`Ocurrió un error al eliminar la tarea ${error}`)
     res.status(BAD_REQUEST_CODE).json({
       success: false,
       message: 'Ocurrió un error al actualizar la tarea'

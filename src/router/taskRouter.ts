@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { param, checkSchema, body } from 'express-validator'
 import { validateFields } from '../middlewares/validateFields'
 import {
+  deleteById,
   getAll,
   getAllByUserAndCategoryId,
   getAllByUserId,
@@ -54,6 +55,13 @@ router.put('/:id',
   verifyToken,
   validateFields,
   update
+)
+
+router.delete('/:id',
+  param('id').notEmpty().isNumeric().withMessage('Parámetro id es requerido.'),
+  verifyToken,
+  validateFields,
+  deleteById
 )
 
 export default router

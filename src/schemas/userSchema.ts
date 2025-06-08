@@ -4,7 +4,7 @@ export const userSchema = {
       options: (value: any) => {
         return typeof value === 'string' && value.trim().length > 0
       },
-      errorMessage: 'Campo name es requerido'
+      errorMessage: 'Campo nombre es requerido'
     }
   },
   age: {
@@ -12,7 +12,7 @@ export const userSchema = {
       options: (value: any) => {
         return typeof value === 'number' && value > 0
       },
-      errorMessage: 'Campo age es requerido'
+      errorMessage: 'Campo edad es requerido'
     }
   },
   email: {

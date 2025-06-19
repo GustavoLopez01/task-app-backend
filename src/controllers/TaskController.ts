@@ -227,6 +227,33 @@ export const update = async (req: Request, res: Response) => {
   }
 }
 
+export const completedTask = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.body    
+    const response = await Task.findByPk(id)
+
+    if (response) {
+      await Task.update({ ...response, isCompleted: true }, { where: { id } })
+      res.status(SUCCESS_ACTION_CODE).json({
+        success: true,
+        message: `La tarea con id ${id} se actualizo correctamente.`
+      })
+      return
+    }
+
+    res.status(NOT_FOUND_CODE).json({
+      success: false,
+      message: `No existe tarea con ${id}`
+    })
+  } catch (error) {
+    console.error(`Ocurrió un error al completar la tarea ${error}`);
+    res.status(BAD_REQUEST_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al completar la tarea'
+    })
+  }
+}
+
 export const deleteById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params

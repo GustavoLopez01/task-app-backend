@@ -32,6 +32,36 @@ export const getAll = async (req: Request, res: Response) => {
   }
 }
 
+export const getByToken = async (req: Request, res: Response) => {
+  try {
+    const email = req.headers?.userEmail
+    const response = await User.findOne(
+      {
+        where: { email },
+        attributes: ['id', 'name', 'age', 'email']
+      },
+    )
+    if (response) {
+      res.status(SUCCESS_ACTION_CODE).json({
+        success: true,
+        user: response
+      })
+      return
+    }
+
+    res.status(NOT_FOUND_CODE).json({
+      success: false,
+      message: `No existe usuario con email ${email}`
+    })
+  } catch (error) {
+    console.error(`Ocurrió un error al obtener el usuario ${error}`);
+    res.status(NOT_FOUND_CODE).json({
+      success: false,
+      message: 'Ocurrió un error al obtener el usuario'
+    })
+  }
+}
+
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
@@ -120,12 +150,16 @@ export const update = async (req: Request, res: Response) => {
     const updateUser: NewUser = { name, age, email, password }
     await User.update(
       { ...updateUser },
-      { where: { id } }
+      {
+        where: { id },
+        individualHooks: true
+      }
     )
 
+    const { password: updatedPassword, ...rest } = updateUser
     res.status(SUCCESS_ACTION_CODE).json({
       success: true,
-      user: { ...updateUser, id }
+      user: { ...rest, id }
     })
   } catch (error) {
     console.error(`Ocurrió un error al actualizar al usuario ${error}`);

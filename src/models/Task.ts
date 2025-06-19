@@ -3,6 +3,7 @@ import {
   Model,
   Column,
   DataType,
+  Default,
 } from 'sequelize-typescript'
 
 @Table({ tableName: 'task' })
@@ -32,6 +33,12 @@ class Task extends Model {
     allowNull: false
   })
   declare number: number
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  declare isCompleted: boolean
 
   @Column({
     type: DataType.INTEGER,

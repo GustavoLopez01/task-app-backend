@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { param, checkSchema, body } from 'express-validator'
 import { validateFields } from '../middlewares/validateFields'
 import {
+  completedTask,
   deleteById,
   getAll,
   getAllByUserAndCategoryId,
@@ -48,6 +49,14 @@ router.post('/',
   validateFields,
   save
 )
+
+router.put('/completed-task',
+  body('id').isNumeric().withMessage('Parámetro id es requerido'),
+  verifyToken,
+  validateFields,
+  completedTask
+)
+
 
 router.put('/:id',
   param('id').notEmpty().isNumeric().withMessage('Parámetro id es requerido.'),

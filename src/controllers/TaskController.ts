@@ -203,13 +203,14 @@ export const update = async (req: Request, res: Response) => {
         title,
         description,
         categoryId,
-        number
+        number,
       }
 
       await Task.update({ ...updateTask }, { where: { id } })
+      const updatedTask = (await Task.findByPk(id)).dataValues
       res.status(SUCCESS_ACTION_CODE).json({
         success: true,
-        task: { ...updateTask, id: response?.id }
+        task: { ...updatedTask, id: response?.id }
       })
       return
     }
@@ -229,7 +230,7 @@ export const update = async (req: Request, res: Response) => {
 
 export const completedTask = async (req: Request, res: Response) => {
   try {
-    const { id } = req.body    
+    const { id } = req.body
     const response = await Task.findByPk(id)
 
     if (response) {

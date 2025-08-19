@@ -58,3 +58,14 @@ const createOrUpdateSession = async (email: string, isActive: boolean) => {
     console.error(`Ocurrió un error al agregar la sesión a la BD ${error}`);
   }
 }
+
+export const successToken = (req: Request, res: Response) => {
+  try {
+    res.status(SUCCESS_ACTION_CODE).json({
+      success: true,
+      message: 'El usuario esta autenticado.'
+    })
+  } catch (error) {
+    console.error(`Ocurrió un error al validar el token ${error}`);
+  }
+} 
